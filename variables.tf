@@ -48,7 +48,7 @@ variable "cloudinit_disk_storage" {
 }
 
 variable "disk" {
-  description = "Disks to be assigned to the VM, note: the name of the individual disk maps are used for the 'slot' variable in the disk block"
+  description = "Disks to be assigned to the VM, note: the name of the individual disk map is used for the 'slot' variable in the disk block"
   type = map(object({
     type = optional(string)
     storage_location_name = string
@@ -60,7 +60,7 @@ variable "disk" {
 }
 
 variable "bootdisk" {
-  description = "The name of disk in which the VM should boot from, this would be the name of the disk map defined above"
+  description = "The name of disk in which the VM should boot from, this would be the name of the disk map as defined in the disk variable(s)"
   type = string
 }
 
