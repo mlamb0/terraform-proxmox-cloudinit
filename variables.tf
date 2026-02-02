@@ -71,6 +71,8 @@ variable "network" {
     bridge = string
     model = string
     tag = optional(number)
+    ip = string
+    gw = optional(string)
   }))
 }
 

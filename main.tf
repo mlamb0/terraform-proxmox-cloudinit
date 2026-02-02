@@ -1,10 +1,22 @@
+locals {
+  # Convert the map to a list for easier lookup by ID, or just iterate the map
+  # This creates a map where keys are the IDs (0, 1, etc) and values are the formatted strings
+  ipconfigs = {
+    for k, v in var.network : v.id => 
+      v.gw != null ? "ip=${v.ip},gw=${v.gw}" : "ip=${v.ip}"
+  }
+}
+
 resource "proxmox_vm_qemu" "main" {
   name = var.name
   vmid = var.vmid
   target_node = var.target_node
   clone = var.clone
-  os_type = "cloud-init"
   agent = var.qemu_guest_agent_enabled ? 1 : 0
+
+  os_type = "cloud-init"
+  ciuser = var.ciuser
+  sshkeys = var.sshkeys[0]
 
   cpu {
     cores = var.cpu_cores
@@ -47,11 +59,13 @@ resource "proxmox_vm_qemu" "main" {
     }
   }
 
+  ipconfig0 = lookup(local.ipconfigs, 0, null)
+  ipconfig1 = lookup(local.ipconfigs, 1, null)
+  ipconfig2 = lookup(local.ipconfigs, 2, null)
+  ipconfig3 = lookup(local.ipconfigs, 3, null)
+
   serial {
     id = 0
     type = "socket"
-  }
-  
-  # cicustom = "user= "
-  
+  }  
 }
